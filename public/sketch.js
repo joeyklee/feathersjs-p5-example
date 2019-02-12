@@ -22,7 +22,7 @@ function setup(){
 
     // initialize by getting the data in the database
     getData();
-
+    // initalize the buttons 
     createRemoveItems();
     
 }
@@ -42,7 +42,6 @@ async function deleteSelected(e){
         console.log(e.currentTarget.id)
         await todos.remove(e.currentTarget.id);
         await getData()
-        await createRemoveItems();
     }catch(err){
         return err
     }
@@ -53,15 +52,10 @@ async function createRemoveItems(){
         deleteContainer.elt.innerHTML = "";
         const {data} = await todos.find()
         data.forEach(item => {
-            // let removeBtn =`
-            //     <button onclick="${deleteSelected(item._id)}" data-id="${item._id}">REMOVE: ${item.todo}</button>
-            // `
             let removeBtn = createElement('button', item.todo).parent('#delete-items-container');
             removeBtn.id(item._id);
             removeBtn.elt.addEventListener('click', deleteSelected);
-            // removeBtn.parent('#delete-items-container');
         });
-        
     } catch(err){
         return err;
     }
@@ -77,7 +71,6 @@ async function postData(e){
 
         await todos.create({todo: newTodo})
         await getData()
-        await createRemoveItems()
     }catch(err){
         return err
     }
@@ -89,6 +82,8 @@ async function getData(){
         const retrievedData = await todos.find()
         console.log('my new data', retrievedData);
         myData = retrievedData.data;
+        // make sure to update our remove items buttons
+        await createRemoveItems()
     }catch(err){
         return err;
     }
